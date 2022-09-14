@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>CaDao</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="landing-container">
+        <div id="hero-container">
+            <h1>Welcome to <span id="company-name">CaDao!</span></h1>
+            <h2>Connect your wallet and start deciding!</h2>
+            <button id="connect-wallet-button">
+                Connect to wallet
+                <img id="wallet-icon" src="res/wallet.svg" alt="wallet icon svg">
+            </button>
+        </div>
+
+        <img src="res/Main-image.png" alt="main image" id="main-image">
+    </div>
+
+    <div id="question-container">
+        <h2 id="question-header">Right now, we are voting on...</h2>
+        <div id="question">Should we discontinue the market prediction project ?</div>
+    </div>
+
+    <div id="answer-container">
+        <div class="answer-button" id="answer-button-yes">Yes</div>
+        <div class="answer-button" id="answer-button-no">No</div>
+    </div>
+
+    <div id="proposal-container">
+        <form action="" autocomplete="off"  method="post" id="proposal-form">
+            <input type="text" placeholder="Input your proposal..." id="proposal">
+            <button type="submit" id="proposal-submit-button"> Submit! </button>
+        </form>
+    </div>
+</body>
+
+</html>
