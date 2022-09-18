@@ -6,9 +6,10 @@ import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol
 import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 
-contract cadaoGovernor is  GovernorCountingSimple, GovernorVotesQuorumFraction {
-    constructor(IVotes _token) Governor("cadaoGovernor") GovernorVotes(_token) GovernorVotesQuorumFraction(4)
-    {}
+contract CadaoGovernor is  GovernorCountingSimple, GovernorVotesQuorumFraction {
+    constructor(IVotes _token) Governor("cadaoGovernor") GovernorVotes(_token) GovernorVotesQuorumFraction(4){
+
+    }
 
     function votingDelay() public pure override returns (uint256) {
         return 1; // 1 block
