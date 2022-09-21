@@ -1,3 +1,4 @@
+import "./style.css"
 import { cadao } from "./cadao"
 
 let cadao_instance = new cadao()
