@@ -39,7 +39,7 @@ async function main() {
 
     // Vote no button
     document.getElementById('answer-button-no')?.addEventListener('click', async () => {
-
+        await cadao.proposals()
     })
 
     // Vote yes button

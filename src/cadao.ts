@@ -41,25 +41,25 @@ export class Cadao {
     }
 
     // get proposals
-    // proposals = async (): Promise<Array<String>> => {
-    //     let ret:Array<String> = []
+    proposals = async (): Promise<Array<String>> => {
+        let ret:Array<String> = []
 
-    //     try {
-    //         if (window.ethereum) {
-    //             const provider = new ethers.providers.Web3Provider(window.ethereum)
-    //             const signer = provider.getSigner()
-    //             const tokenContract = new ethers.Contract(this.tokenAddress, tokAbi.abi, signer)
+        try {
+            if (window.ethereum) {
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+                const signer = provider.getSigner()
+                const tokenContract = new ethers.Contract(this.tokenAddress, tokAbi.abi, signer)
 
-    //             let probando = tokenContract.prob()
-    //             console.log(typeof(probando))
+                let probando = await tokenContract.prob()
+                console.log(probando)
 
-    //         }
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
+            }
+        } catch (error) {
+            console.log(error)
+        }
 
-    //     return ret
-    // }
+        return ret
+    }
 
 }
 

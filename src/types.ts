@@ -6,6 +6,6 @@ type Provider = MetaMaskInpageProvider & ExternalProvider
 
 declare global {
     interface Window {
-        ethereum?: MetaMaskInpageProvider
+        ethereum?: Provider
     }
 }
