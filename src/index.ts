@@ -1,6 +1,5 @@
 import "./css/style.css"
 import { Cadao } from "./cadao"
-import { ProviderRpcError } from "hardhat/types"
 
 let cadao = new Cadao()
 
@@ -39,12 +38,12 @@ async function main() {
 
     // Vote no button
     document.getElementById('answer-button-no')?.addEventListener('click', async () => {
-        await cadao.proposals()
+        await cadao.propose('te propongo 4')
     })
 
     // Vote yes button
     document.getElementById('answer-button-yes')?.addEventListener('click', async () => {
-
+        await cadao.retrieve()
     })
 
 
@@ -53,7 +52,7 @@ async function main() {
     window.ethereum?.on('accountsChanged', async function (accounts) {
         if (accounts instanceof Array<String>){
             // if accounts is empty then the user disconnected from metamask
-            // if its not, then the user is connected
+            // if its not, then the user either connected or switched accounts
             let status = accounts.length != 0
 
             updateConnectButton(status) 
