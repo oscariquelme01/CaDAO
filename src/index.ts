@@ -38,12 +38,12 @@ async function main() {
 
     // Vote no button
     document.getElementById('answer-button-no')?.addEventListener('click', async () => {
-        await cadao.propose('te propongo 4')
+        await cadao.propose('te propongo 10')
     })
 
     // Vote yes button
     document.getElementById('answer-button-yes')?.addEventListener('click', async () => {
-        await cadao.retrieve()
+
     })
 
 

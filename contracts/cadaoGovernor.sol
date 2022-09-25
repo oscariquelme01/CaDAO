@@ -4,10 +4,24 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/governance/Governor.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
-import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 
-contract CadaoGovernor is  GovernorCountingSimple, GovernorVotesQuorumFraction {
-    constructor(IVotes _token) Governor("cadaoGovernor") GovernorVotes(_token) GovernorVotesQuorumFraction(4){
+contract CadaoGovernor is Governor, GovernorCountingSimple, GovernorVotes {
+
+    struct proposal { 
+        string description;
+        uint256 id;
+    }
+
+    proposal currentProposal;
+
+
+    constructor(IVotes _token) Governor("CadaoGovernor") GovernorVotes(_token) {
+        currentProposal.description = 'Hola!';
+        currentProposal.id = 256;
+    }
+
+    // This function is used as the function that will be passed everytime someone propose something since this is not a real dao!, so ye it does nothing
+    function doNothing() public pure {
 
     }
 
@@ -19,9 +33,16 @@ contract CadaoGovernor is  GovernorCountingSimple, GovernorVotesQuorumFraction {
         return 45; // 10 minutes
     }
 
-    // The following functions are overrides required by Solidity.
+    function quorum(uint256 blockNumber) public pure override returns (uint256) {
+        return 3e18;
+    }
 
-    function quorum(uint256 blockNumber) public view override(IGovernor, GovernorVotesQuorumFraction) returns (uint256) {
-        return super.quorum(blockNumber);
+    function retrieveCurrentProposal() public view returns(proposal memory){
+        return currentProposal;
+    }
+    
+    function setCurrentProposal(uint256 id, string memory desc) public {
+        currentProposal.id = id;
+        currentProposal.description = desc;
     }
 }
