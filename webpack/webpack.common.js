@@ -10,7 +10,22 @@ module.exports = {
         chunkFilename: '[name].chunk.js'
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js']
+        extensions: ['.ts', '.tsx', '.js'],
+        fallback: {
+            "fs": false,
+            "tls": false,
+            "os": false,
+            "vm": false,
+            "console": false,
+            "assert": false,
+            "net": false,
+            "path": false,
+            "zlib": false,
+            "http": false,
+            "https": false,
+            "stream": false,
+            "crypto": false,
+            "crypto-browserify": false        }
     },
     module: {
         rules: [
