@@ -4,11 +4,6 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 
 contract CadaoToken is ERC20Votes {
-    uint256 probando = 256;
-
-    function prob() public view returns(uint256){ 
-        return probando * 2;
-    }
 
     constructor() ERC20("CadaoToken", "CDT") ERC20Permit("CadaoToken") {
         _mint(msg.sender, 1000000 * 10 ** decimals());
