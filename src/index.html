@@ -36,7 +36,25 @@
         <div class="answer-button" id="answer-button-no">No</div>
     </div>
 
+    <div id="vote-count-container">
+        <h2 id="vote-count-header">Current Votes:</h2>
+        <div id="vote-count-graph-container">
+            <div id="vote-count-graph-for"></div>
+            <div id="vote-count-graph-against"></div>
+        </div>
+        <div id="vote-count">
+            <span id="vote-count-for">1 in favour</span>
+             || 
+            <span id="vote-count-against">2 against</span>
+        </div>
+        <div id="vote-count-info">
+            Proposal began at 11:34 am and will end at 11:44 am
+        </div>
+    </div>
+
+
     <div id="proposal-container">
+        <h2 id="proposal-header">Make your own proposal!</h2>
         <form action="" autocomplete="off" method="post" id="proposal-form">
             <input type="text" placeholder="Input your proposal..." id="proposal" name="proposal">
             <button type="submit" id="proposal-submit-button"> Submit! </button>

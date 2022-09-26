@@ -149,9 +149,80 @@ input {
 #answer-button-no{
     border: 5px solid var(--disapprove-color);
 }
+/* VOTES SECTION */
+
+#vote-count-container{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#vote-count-header{
+    text-align: center;
+    color: var(--main-text-color);
+    font-size: 2.5rem;
+}
+
+#vote-count-graph-container{
+    width: 100%;
+    display: flex;
+    margin: 2rem 0 1rem 0;
+}
+
+#vote-count-graph-for{
+    background-color: var(--approve-color);
+    height: 2rem;
+    flex-grow: 1;
+    /* border-bottom-right-radius: 0.5rem; */
+    /* border-top-right-radius: 0.5rem; */
+}
+
+#vote-count-graph-against{
+    background-color: var(--disapprove-color);
+    height: 2rem;
+    flex-grow: 2;
+    /* border-bottom-left-radius: 0.5rem; */
+    /* border-top-left-radius: 0.5rem; */
+}
+
+#vote-count{
+    color: var(--main-text-color);
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 4rem;
+}
+
+#vote-count-for{
+    color: var(--approve-color);
+}
+
+#vote-count-against{
+    color: var(--disapprove-color);
+}
+
+#vote-count-info{
+    width: 100%;
+    background-color: var(--bg-button-color);
+    color: var(--main-text-color);
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: 1rem 0;
+}
+
+/* PROPOSAL SECTION */
 
 #proposal-container{
     width: 100%;
+    margin: 6rem 0;
+}
+
+#proposal-header{ 
+    width: 100%;
+    text-align: center;
+    color: var(--proposal-color);
+    font-size: 2.5rem;
     margin: 6rem 0;
 }
 
