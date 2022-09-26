@@ -19,6 +19,11 @@ function updateConnectButton(state: Boolean) {
 
 }
 
+function updateCurrentProposal(proposal: string){
+    let question = document.getElementById('question') as HTMLDivElement
+    question.innerText = proposal
+}
+
 async function main() {
 
     // Initialize basic cadao object attributes
@@ -49,7 +54,6 @@ async function main() {
 
 
     // --------------- Metamask wallet event handlers ---------------
-
     window.ethereum?.on('accountsChanged', async function(accounts) {
         if (accounts instanceof Array<String>) {
             // if accounts is empty then the user disconnected from metamask
@@ -67,6 +71,9 @@ async function main() {
         }
 
     })
+
+    // --------------- Handling cadao class events ---------------
+    cadao.on('newProposal', updateCurrentProposal)
 
     // --------------- Using the form to make proposals ---------------
     let form = document.getElementById('proposal-form') as HTMLFormElement

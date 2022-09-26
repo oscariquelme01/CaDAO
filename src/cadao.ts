@@ -1,5 +1,8 @@
 import { ethers, utils } from "ethers"
+import { EventEmitter } from "events"
 import govAbi from "../artifacts/contracts/cadaoGovernor.sol/CadaoGovernor.json"
+
+require('events')
 
 type proposal = {
     id: string
@@ -7,7 +10,7 @@ type proposal = {
 }
 
 // Wrap all functionality needed in a class to abstract the interaction with all the contrats
-export class Cadao {
+export class Cadao extends EventEmitter {
     connected: Boolean = false
     account: string = ''
     governorAddress: string = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
@@ -63,12 +66,16 @@ export class Cadao {
                 this.currentProposal.description = args[8]
                 this.currentProposal.id = args[0]
 
+                // emit event handled by the frontend to update the proposal
+                this.emit('newProposal', args[8])
             })
         }
 
     }
 
     constructor() {
+        super()
+
         this.loadEventHandlers()
         this.loadCurrentProposal()
     }

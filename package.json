@@ -20,6 +20,7 @@
         "@nomicfoundation/hardhat-toolbox": "^2.0.0",
         "@nomiclabs/hardhat-ethers": "^2.1.1",
         "@openzeppelin/test-helpers": "^0.5.16",
+        "@types/node": "^18.7.21",
         "chai": "^4.3.6",
         "copy-webpack-plugin": "^11.0.0",
         "css-loader": "^6.7.1",
