@@ -38,33 +38,48 @@ async function main() {
 
     // Vote no button
     document.getElementById('answer-button-no')?.addEventListener('click', async () => {
-        await cadao.propose('te propongo 10')
+        console.log(cadao.currentProposal.description)
+        await cadao.vote(0)
     })
 
     // Vote yes button
     document.getElementById('answer-button-yes')?.addEventListener('click', async () => {
-
+        await cadao.vote(1)
     })
 
 
     // --------------- Metamask wallet event handlers ---------------
 
-    window.ethereum?.on('accountsChanged', async function (accounts) {
-        if (accounts instanceof Array<String>){
+    window.ethereum?.on('accountsChanged', async function(accounts) {
+        if (accounts instanceof Array<String>) {
             // if accounts is empty then the user disconnected from metamask
             // if its not, then the user either connected or switched accounts
             let status = accounts.length != 0
 
-            updateConnectButton(status) 
+            updateConnectButton(status)
 
             cadao.connected = status
-            if(status){
+            if (status) {
                 cadao.account = accounts[0]
-            } else { 
+            } else {
                 cadao.account = ''
             }
         }
 
+    })
+
+    // --------------- Using the form to make proposals ---------------
+    let form = document.getElementById('proposal-form') as HTMLFormElement
+
+    form.addEventListener('submit', (event: Event) => {
+        // Prevent reloading
+        event.preventDefault()
+
+        let proposal = form.elements[0] as HTMLInputElement
+        console.log(proposal.value)
+        cadao.propose(proposal.value)
+
+        proposal.value = ''
     })
 
 } // end main

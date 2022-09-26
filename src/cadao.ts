@@ -14,6 +14,7 @@ export class Cadao {
     currentProposal: proposal = { id: '', description: '' }
 
 
+    // Initialize the current proposal from the blockchain
     private loadCurrentProposal = async () => {
         // get signer
         let signer
@@ -31,10 +32,9 @@ export class Cadao {
             const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
 
             let proposal = await govContract.retrieveCurrentProposal()
-            this.currentProposal.description = utils.parseBytes32String(proposal[0])
+            // this.currentProposal.description = utils.parseBytes32String(proposal[0])
+            this.currentProposal.description = proposal[0]
             this.currentProposal.id = proposal[1]
-
-            console.log(this.currentProposal)
 
         }
 
@@ -56,15 +56,13 @@ export class Cadao {
 
         if (signer != undefined) {
 
-            // On ProposalCreated
+            // Callback to be executed when a new proposal is created
             const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
             govContract.on("ProposalCreated", async (...args) => {
 
-                console.log(args[0])
                 this.currentProposal.description = args[8]
                 this.currentProposal.id = args[0]
 
-                await govContract.setCurrentProposal(args[0], utils.formatBytes32String(args[8]))
             })
         }
 
@@ -147,7 +145,7 @@ export class Cadao {
                 const signer = provider.getSigner()
                 const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
 
-                await govContract.castVote(this.currentProposal, vote)
+                await govContract.castVote(this.currentProposal.id, ethers.BigNumber.from(vote))
             }
         } catch (error) {
             console.log(error)

@@ -16,7 +16,7 @@ contract CadaoGovernor is Governor, GovernorCountingSimple, GovernorVotes {
 
 
     constructor(IVotes _token) Governor("CadaoGovernor") GovernorVotes(_token) {
-        currentProposal.description = 'Hola!';
+        currentProposal.description = 'Holaaa';
         currentProposal.id = 256;
     }
 
@@ -38,11 +38,28 @@ contract CadaoGovernor is Governor, GovernorCountingSimple, GovernorVotes {
     }
 
     function retrieveCurrentProposal() public view returns(proposal memory){
+        if(currentProposal.id == 0){
+            proposal memory ret;
+            ret.description = 'No proposals yet!';
+            ret.id = 0;
+            return ret;
+        }
+
         return currentProposal;
     }
     
-    function setCurrentProposal(uint256 id, string memory desc) public {
+    function setCurrentProposal(uint256 id, string memory desc) internal {
         currentProposal.id = id;
         currentProposal.description = desc;
+    }
+
+    function propose(address[] memory targets, uint256[] memory values, bytes[] memory calldatas, string memory description) public override returns(uint256){
+        uint256 id = hashProposal(targets, values, calldatas, keccak256(abi.encodePacked(description)));
+        uint256 ret = super.propose(targets, values, calldatas, description);
+        
+        // Set current proposal
+        setCurrentProposal(id, description);
+
+        return ret;
     }
 }
