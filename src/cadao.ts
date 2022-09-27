@@ -2,8 +2,6 @@ import { ethers, utils } from "ethers"
 import { EventEmitter } from "events"
 import govAbi from "../artifacts/contracts/cadaoGovernor.sol/CadaoGovernor.json"
 
-require('events')
-
 type proposal = {
     id: string
     description: string
@@ -35,7 +33,6 @@ export class Cadao extends EventEmitter {
             const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
 
             let proposal = await govContract.retrieveCurrentProposal()
-            // this.currentProposal.description = utils.parseBytes32String(proposal[0])
             this.currentProposal.description = proposal[0]
             this.currentProposal.id = proposal[1]
 
@@ -62,12 +59,20 @@ export class Cadao extends EventEmitter {
             // Callback to be executed when a new proposal is created
             const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
             govContract.on("ProposalCreated", async (...args) => {
+                console.log("new proposal!")
 
                 this.currentProposal.description = args[8]
                 this.currentProposal.id = args[0]
 
                 // emit event handled by the frontend to update the proposal
                 this.emit('newProposal', args[8])
+            })
+
+            // Callback to be executed when a new vote is casted
+            govContract.on("VoteCast", async (...args) => {
+                console.log("new vote!")
+                console.log(args[2])
+                this.emit('newVote')
             })
         }
 
@@ -126,7 +131,6 @@ export class Cadao extends EventEmitter {
                 const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
 
 
-                console.log('Submitting proposal...')
                 // Call mockup function
                 const calldata = govContract.interface.encodeFunctionData("doNothing", [])
                 await govContract.propose([this.governorAddress], [0], [calldata], description)
@@ -160,5 +164,51 @@ export class Cadao extends EventEmitter {
 
     }
 
+    // Retrieve votes for current proposal
+    getVotes = async () => {
+        if (!this.connected) {
+            console.log('not connected!!!')
+            return
+        }
+
+        try {
+            if (window.ethereum) {
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+                const signer = provider.getSigner()
+                const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
+
+                const votes = await govContract.proposalVotes(this.currentProposal.id)
+                return votes
+
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    // Retrieve deadline in blocks
+    getProposalDeadline = async () => {
+        if (!this.connected) {
+            console.log('not connected!!!')
+            return
+        }
+
+        try {
+            if (window.ethereum) {
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+                const signer = provider.getSigner()
+                const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
+
+                const deadline = await govContract.state(this.currentProposal.id)
+                console.log(await provider.getBlockNumber())
+                return deadline
+
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
 }
 

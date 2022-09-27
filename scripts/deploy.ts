@@ -18,6 +18,9 @@ async function main(){
     console.log(`Governor contract deployed at ${governor.address}`)
 }
 
+async function delegate(account: string) {
+
+}
 main().catch((error) => {
     console.error(error)
     process.exitCode = 1

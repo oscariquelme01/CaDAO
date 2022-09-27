@@ -173,7 +173,6 @@ input {
 #vote-count-graph-for{
     background-color: var(--approve-color);
     height: 2rem;
-    flex-grow: 1;
     /* border-bottom-right-radius: 0.5rem; */
     /* border-top-right-radius: 0.5rem; */
 }
@@ -181,7 +180,6 @@ input {
 #vote-count-graph-against{
     background-color: var(--disapprove-color);
     height: 2rem;
-    flex-grow: 2;
     /* border-bottom-left-radius: 0.5rem; */
     /* border-top-left-radius: 0.5rem; */
 }
@@ -190,7 +188,7 @@ input {
     color: var(--main-text-color);
     font-size: 2rem;
     font-weight: bold;
-    margin-bottom: 4rem;
+    margin-bottom: 1rem;
 }
 
 #vote-count-for{
