@@ -284,7 +284,8 @@ input {
     align-items: center;
 }
 
-.market-button{
+#market-buy-button{
+    background-color: var(--approve-color);
     border-radius: 1rem;
     cursor: pointer;
     border-width: 0px;
@@ -296,12 +297,4 @@ input {
     padding: 1rem;
     min-width: 360px;
     margin: 1rem 0;
-}
-
-#market-sell-button{
-    background-color: var(--disapprove-color);
-}
-
-#market-buy-button{
-    background-color: var(--approve-color);
 }
