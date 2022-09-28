@@ -273,8 +273,9 @@ input {
 
 #market-pricing{
     color: var(--secondary-text-color);
-    font-size: 1.5rem;
+    font-size: 2rem;
     margin-top: 2rem;
+    font-weight: 700;
 }
 
 #market-buttons-wrapper{
@@ -282,6 +283,12 @@ input {
     flex-direction: column;
     justify-content: around;
     align-items: center;
+}
+
+.market-info {
+    color: var(--main-text-color);
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
 #market-buy-button{
