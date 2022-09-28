@@ -4,4 +4,4 @@ build/
 typechain-types/
 artifacts/
 coverage*
-.env
+secrets.json
