@@ -36,4 +36,8 @@ contract CadaoToken is ERC20Votes {
         super._burn(account, amount);
     }
 
+    function decimals() public view virtual override returns (uint8){
+        return 9;
+    }
+
 }

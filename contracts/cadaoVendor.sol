@@ -19,6 +19,10 @@ contract CadaoVendor is Ownable {
         require(msg.value > 0, "No ether was sent!");
         
         uint256 amountToBuy = msg.value * tokensPerEth;
+        // if the decimals for the erc20 has been modified, correct the amount
+        if (token.decimals() < 18){
+            amountToBuy = amountToBuy / 10 ** (18 - token.decimals());
+        }
 
         uint256 vendorBalance = token.balanceOf(address(this));
         require(vendorBalance > amountToBuy, "Vendor has not enough tokens!");
