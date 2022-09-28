@@ -1,6 +1,8 @@
 import { ethers, utils } from "ethers"
 import { EventEmitter } from "events"
 import govAbi from "../artifacts/contracts/cadaoGovernor.sol/CadaoGovernor.json"
+import tokAbi from "../artifacts/contracts/cadaoToken.sol/CadaoToken.json"
+import vendorAbi from "../artifacts/contracts/cadaoVendor.sol/CadaoVendor.json"
 
 type proposal = {
     id: string
@@ -12,11 +14,13 @@ export class Cadao extends EventEmitter {
     connected: Boolean = false
     account: string = ''
     governorAddress: string = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
+    tokenAddress: string = '0x5fbdb2315678afecb367f032d93f642f64180aa3'
+    vendorAddress: string = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0'
     currentProposal: proposal = { id: '', description: '' }
 
 
     // Initialize the current proposal from the blockchain
-    private loadCurrentProposal = async () => {
+    loadCurrentProposal = async () => {
         // get signer
         let signer
         try {
@@ -71,7 +75,6 @@ export class Cadao extends EventEmitter {
             // Callback to be executed when a new vote is casted
             govContract.on("VoteCast", async (...args) => {
                 console.log("new vote!")
-                console.log(args[2])
                 this.emit('newVote')
             })
         }
@@ -80,9 +83,11 @@ export class Cadao extends EventEmitter {
 
     constructor() {
         super()
+    }
 
-        this.loadEventHandlers()
-        this.loadCurrentProposal()
+    init = async () => {
+        await this.loadEventHandlers()
+        await this.loadCurrentProposal()
     }
 
     // check if metamask or some other provider injected the ethereum window
@@ -171,6 +176,8 @@ export class Cadao extends EventEmitter {
             return
         }
 
+        let block = 67
+
         try {
             if (window.ethereum) {
                 const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -178,6 +185,7 @@ export class Cadao extends EventEmitter {
                 const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
 
                 const votes = await govContract.proposalVotes(this.currentProposal.id)
+
                 return votes
 
             }
@@ -201,7 +209,6 @@ export class Cadao extends EventEmitter {
                 const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
 
                 const deadline = await govContract.state(this.currentProposal.id)
-                console.log(await provider.getBlockNumber())
                 return deadline
 
             }
@@ -209,6 +216,74 @@ export class Cadao extends EventEmitter {
             console.log(error)
         }
 
+    }
+
+    buyTokens = async () => {
+        if (!this.connected) {
+            console.log('not connected!!!')
+            return
+        }
+
+        try {
+            if (window.ethereum) {
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+                const signer = provider.getSigner()
+                const vendorContract = new ethers.Contract(this.vendorAddress, vendorAbi.abi, signer)
+
+                await vendorContract.buyTokens({ value: utils.parseEther("0.1") })
+                const tokContract = new ethers.Contract(this.tokenAddress, tokAbi.abi, signer)
+
+                // Delegate de vote to the buyer so that the checkpoint is made created inmediatly
+                await tokContract.delegate(this.account)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+    getBalance = async () => {
+        if (!this.connected) {
+            console.log('not connected!!!')
+            return
+        }
+
+        try {
+            if (window.ethereum) {
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+                const signer = provider.getSigner()
+                const tokContract = new ethers.Contract(this.tokenAddress, tokAbi.abi, signer)
+
+                let balance = await tokContract.balanceOf(this.account)
+
+                return balance
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    getTotalSupply = async () => {
+        if (!this.connected) {
+            console.log('not connected!!!')
+            return
+        }
+
+        try {
+            if (window.ethereum) {
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+                const signer = provider.getSigner()
+                const tokContract = new ethers.Contract(this.tokenAddress, tokAbi.abi, signer)
+
+                let totalSupply = await tokContract.totalSupply()
+
+                return totalSupply
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 }
 

@@ -3,6 +3,23 @@ import { Cadao } from "./cadao"
 
 let cadao = new Cadao()
 
+let decimals = 9
+
+async function updateMarketInfo(){
+
+    let totalSupplyDiv = document.getElementById('market-total-supply') as HTMLDivElement
+    let currentBalanceDiv = document.getElementById('market-current-balance') as HTMLDivElement
+
+    let totalSupply = await cadao.getTotalSupply()
+    let currentBalance = await cadao.getBalance()
+
+    // This is done to avoid overflow as directly dividing by 10^18 overflows
+    let tenToThePowerOfNine = Math.pow(10, decimals)
+
+    totalSupplyDiv.innerText = `Total supply: ${totalSupply.div(tenToThePowerOfNine)}`
+    currentBalanceDiv.innerText = `Current balance: ${currentBalance.div(tenToThePowerOfNine)}`
+} 
+
 function updateConnectButton(state: Boolean) {
     let connectButton = document.getElementById('connect-wallet-button') as HTMLButtonElement
     let innerDiv = connectButton.firstElementChild as HTMLDivElement
@@ -29,9 +46,8 @@ async function updateVoteSection() {
 
         // Get vote count, index 0 are for votes, index 1 are against votes
         let votes = await cadao.getVotes()
-        console.log(votes)
-        forVotes = votes[0].toNumber()
-        againstVotes = votes[1].toNumber()
+        forVotes = votes[0].toNumber() / Math.pow(10, decimals)
+        againstVotes = votes[1].toNumber() / Math.pow(10, decimals)
 
         if (forVotes == 0 && againstVotes == 0) {
             nobodyVoted = true
@@ -73,8 +89,9 @@ function updateCurrentProposal(proposal: string) {
 
 async function main() {
 
-    // Initialize basic cadao object attributes
+    // Initialize basic cadao object attributes since constructor can't be async
     await cadao.checkIfWalletIsConnected()
+    await cadao.init()
 
 
     // --------------- Initial state for the frontend ---------------
@@ -83,6 +100,7 @@ async function main() {
     updateConnectButton(cadao.connected)
     updateCurrentProposal(cadao.currentProposal.description)
     updateVoteSection()
+    updateMarketInfo()
 
 
     // --------------- button click event listeners ---------------
@@ -94,13 +112,18 @@ async function main() {
 
     // Vote no button
     document.getElementById('answer-button-no')?.addEventListener('click', async () => {
-        // await cadao.vote(0)
-        console.log(await cadao.getVotes())
+        await cadao.vote(0)
     })
 
     // Vote yes button
     document.getElementById('answer-button-yes')?.addEventListener('click', async () => {
         await cadao.vote(1)
+    })
+
+    // Buy tokens button
+    document.getElementById('market-buy-button')?.addEventListener('click', async () => {
+        await cadao.buyTokens()
+        updateMarketInfo()
     })
 
 
