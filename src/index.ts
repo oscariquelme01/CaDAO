@@ -125,6 +125,27 @@ async function updateCurrentProposal(proposal: string) {
         default:
             break;
     }
+
+    //Update the time for the proposal
+    let timeInfo = document.getElementById('vote-count-info') as HTMLDivElement
+
+    if (Number(cadao.currentProposal.id)){
+        let dates = await cadao.getProposalDates()
+
+        if (dates){
+            let startDate = new Date(dates['startDate'] * 1000)
+            // This will be true if the block has already been mined
+            if('endDate' in dates){
+                let endDate = new Date(dates['endDate'] * 1000)
+                timeInfo.innerText = `Proposal began at ${startDate.toLocaleTimeString()} and ended at ${endDate.toLocaleTimeString()}`
+            }
+            else {
+                let endDate = new Date(startDate.getTime() + 10*60*1000) // 10 minutes since js counts in ms and that is what proposals last
+                timeInfo.innerText = `Proposal began at ${startDate.toLocaleTimeString()} and will end at ${endDate.toLocaleTimeString()}`
+            }
+        }
+    }
+
 }
 
 async function main() {
@@ -210,7 +231,10 @@ async function main() {
 
 
     // --------------- Handling cadao class events ---------------
-    cadao.on('newProposal', updateCurrentProposal)
+    cadao.on('newProposal', async function (){
+        updateVoteSection()
+        updateCurrentProposal(cadao.currentProposal.description)
+    })
     cadao.on('newVote', updateVoteSection)
 
 

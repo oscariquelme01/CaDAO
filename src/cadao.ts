@@ -325,5 +325,32 @@ export class Cadao extends EventEmitter {
             console.log(error)
         }
     }
+
+    getProposalDates = async () => {
+        if (!this.connected) {
+            console.log('not connected!!!')
+            return
+        }
+
+        try {
+            if (window.ethereum) {
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+                let ret = {}
+
+                ret['startDate'] = (await provider.getBlock(this.currentProposal.startBlock)).timestamp
+
+                // if the block has already been mined
+                if (Number(await provider.getBlockNumber()) >= this.currentProposal.endBlock){
+                    ret['endDate'] = (await provider.getBlock(this.currentProposal.endBlock)).timestamp
+                }
+
+                return ret
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+        return {}
+    }
 }
 
