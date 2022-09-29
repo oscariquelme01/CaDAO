@@ -185,6 +185,7 @@ export class Cadao extends EventEmitter {
                 const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
 
                 const votes = await govContract.proposalVotes(this.currentProposal.id)
+                console.log(votes)
 
                 return votes
 
@@ -285,5 +286,52 @@ export class Cadao extends EventEmitter {
             console.log(error)
         }
     }
+
+    // 0: pending, 1: active: 2: canceled, 3: defeated, 4: succeded, 5: queued, 6:expired, 7: executed  
+    getProposalState = async () => {
+        if (!this.connected) {
+            console.log('not connected!!!')
+            return
+        }
+
+        try {
+            if (window.ethereum) {
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+                const signer = provider.getSigner()
+                const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
+
+                let state = govContract.state(this.currentProposal.id)
+
+                return state
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // getVotingPower = async () => {
+    //     if (!this.connected) {
+    //         console.log('not connected!!!')
+    //         return
+    //     }
+
+    //     try {
+    //         if (window.ethereum) {
+    //             const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+    //             const signer = provider.getSigner()
+    //             const tokContract = new ethers.Contract(this.tokenAddress, tokAbi.abi, signer)
+
+    //             let currentBlock = await provider.getBlockNumber()
+    //             console.log(currentBlock)
+    //             let votingPower =  tokContract.getPastVotes(this.account, await provider.getBlockNumber() - 1)
+
+    //             return votingPower
+    //         }
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
 }
 

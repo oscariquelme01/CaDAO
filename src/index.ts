@@ -46,7 +46,7 @@ async function updateVoteSection() {
 
         // Get vote count, index 0 are for votes, index 1 are against votes
         let votes = await cadao.getVotes()
-        forVotes = votes[0].toNumber() / Math.pow(10, decimals)
+        forVotes = votes[2].toNumber() / Math.pow(10, decimals)
         againstVotes = votes[1].toNumber() / Math.pow(10, decimals)
 
         if (forVotes == 0 && againstVotes == 0) {
@@ -82,9 +82,49 @@ async function updateVoteSection() {
     }
 }
 
-function updateCurrentProposal(proposal: string) {
+async function updateCurrentProposal(proposal: string) {
     let question = document.getElementById('question') as HTMLDivElement
     question.innerText = proposal
+
+    let state = await cadao.getProposalState()
+    let stateDiv = document.getElementById('question-state') as HTMLDivElement
+
+    switch (state) {
+        case 0:
+            stateDiv.innerHTML = 'State: Pending...'
+            break;
+
+        case 1:
+            stateDiv.innerHTML = 'State: Active'
+            break;
+
+        case 2:
+            stateDiv.innerHTML = 'State: Canceled'
+            break;
+
+        case 3:
+            stateDiv.innerHTML = 'State: Defeated'
+            break;
+
+        case 4:
+            stateDiv.innerHTML = 'State: Succeded'
+            break;
+
+        case 5:
+            stateDiv.innerHTML = 'State: Queued'
+            break;
+
+        case 6:
+            stateDiv.innerHTML = 'State: Expired'
+            break;
+
+        case 7:
+            stateDiv.innerHTML = 'State: Executed'
+            break;
+
+        default:
+            break;
+    }
 }
 
 async function main() {
@@ -112,12 +152,13 @@ async function main() {
 
     // Vote no button
     document.getElementById('answer-button-no')?.addEventListener('click', async () => {
-        await cadao.vote(0)
+        // console.log(await cadao.getVotingPower())
+        await cadao.vote(1)
     })
 
     // Vote yes button
     document.getElementById('answer-button-yes')?.addEventListener('click', async () => {
-        await cadao.vote(1)
+        await cadao.vote(2)
     })
 
     // Buy tokens button

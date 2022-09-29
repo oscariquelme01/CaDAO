@@ -16,7 +16,7 @@ contract CadaoGovernor is Governor, GovernorCountingSimple, GovernorVotes {
 
 
     constructor(IVotes _token) Governor("CadaoGovernor") GovernorVotes(_token) {
-        currentProposal.description = 'Holaaa';
+        currentProposal.description = 'No proposals yet...';
         currentProposal.id = 256;
     }
 

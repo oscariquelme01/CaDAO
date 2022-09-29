@@ -118,6 +118,17 @@ input {
     letter-spacing: 2px;
 }
 
+#question-state{
+    position: relative;
+    top: 6rem;
+    width: 100%;
+    text-align: right;
+    box-sizing: border-box;
+    left: -6rem;
+    color: var(--secondary-text-color);
+    font-size: 1.5rem;
+}
+
 
 /* ANSWER SECTION */
 
