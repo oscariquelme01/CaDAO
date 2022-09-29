@@ -152,12 +152,33 @@ async function main() {
 
     // Vote no button
     document.getElementById('answer-button-no')?.addEventListener('click', async () => {
-        // console.log(await cadao.getVotingPower())
+        if(!Number(cadao.currentProposal.id)){
+            window.alert("No proposal yet!")
+            return
+        }
+
+        let votingPower = await cadao.getVotingPower()
+        if(!votingPower.toNumber()){
+            window.alert("You have no voting power!")
+            return
+        }
+
         await cadao.vote(1)
     })
 
     // Vote yes button
     document.getElementById('answer-button-yes')?.addEventListener('click', async () => {
+        if(!Number(cadao.currentProposal.id)){
+            window.alert("No proposal yet!")
+            return
+        }
+
+        let votingPower = await cadao.getVotingPower()
+        if(!votingPower.toNumber()){
+            window.alert("You have no voting power!")
+            return
+        }
+
         await cadao.vote(2)
     })
 

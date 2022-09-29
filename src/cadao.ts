@@ -7,6 +7,8 @@ import vendorAbi from "../artifacts/contracts/cadaoVendor.sol/CadaoVendor.json"
 type proposal = {
     id: string
     description: string
+    startBlock: number
+    endBlock: number
 }
 
 // Wrap all functionality needed in a class to abstract the interaction with all the contrats
@@ -16,7 +18,7 @@ export class Cadao extends EventEmitter {
     governorAddress: string = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
     tokenAddress: string = '0x5fbdb2315678afecb367f032d93f642f64180aa3'
     vendorAddress: string = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0'
-    currentProposal: proposal = { id: '', description: '' }
+    currentProposal: proposal = { id: '', description: '', startBlock: 0, endBlock: 0 }
 
 
     // Initialize the current proposal from the blockchain
@@ -39,6 +41,9 @@ export class Cadao extends EventEmitter {
             let proposal = await govContract.retrieveCurrentProposal()
             this.currentProposal.description = proposal[0]
             this.currentProposal.id = proposal[1]
+
+            this.currentProposal.startBlock = (await govContract.proposalSnapshot(proposal[1])).toNumber()
+            this.currentProposal.endBlock = (await govContract.proposalDeadline(proposal[1])).toNumber()
 
         }
 
@@ -67,6 +72,9 @@ export class Cadao extends EventEmitter {
 
                 this.currentProposal.description = args[8]
                 this.currentProposal.id = args[0]
+                // Hopefully this doesn't fail when block number is too big
+                this.currentProposal.startBlock = args[6].toNumber()
+                this.currentProposal.endBlock = args[7].toNumber()
 
                 // emit event handled by the frontend to update the proposal
                 this.emit('newProposal', args[8])
@@ -75,6 +83,7 @@ export class Cadao extends EventEmitter {
             // Callback to be executed when a new vote is casted
             govContract.on("VoteCast", async (...args) => {
                 console.log("new vote!")
+
                 this.emit('newVote')
             })
         }
@@ -161,7 +170,9 @@ export class Cadao extends EventEmitter {
                 const signer = provider.getSigner()
                 const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
 
-                await govContract.castVote(this.currentProposal.id, ethers.BigNumber.from(vote))
+                if(Number(this.currentProposal.id)){
+                    await govContract.castVote(this.currentProposal.id, ethers.BigNumber.from(vote))
+                }
             }
         } catch (error) {
             console.log(error)
@@ -176,8 +187,6 @@ export class Cadao extends EventEmitter {
             return
         }
 
-        let block = 67
-
         try {
             if (window.ethereum) {
                 const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -185,7 +194,6 @@ export class Cadao extends EventEmitter {
                 const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
 
                 const votes = await govContract.proposalVotes(this.currentProposal.id)
-                console.log(votes)
 
                 return votes
 
@@ -196,28 +204,6 @@ export class Cadao extends EventEmitter {
 
     }
 
-    // Retrieve deadline in blocks
-    getProposalDeadline = async () => {
-        if (!this.connected) {
-            console.log('not connected!!!')
-            return
-        }
-
-        try {
-            if (window.ethereum) {
-                const provider = new ethers.providers.Web3Provider(window.ethereum)
-                const signer = provider.getSigner()
-                const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
-
-                const deadline = await govContract.state(this.currentProposal.id)
-                return deadline
-
-            }
-        } catch (error) {
-            console.log(error)
-        }
-
-    }
 
     buyTokens = async () => {
         if (!this.connected) {
@@ -301,37 +287,43 @@ export class Cadao extends EventEmitter {
                 const signer = provider.getSigner()
                 const govContract = new ethers.Contract(this.governorAddress, govAbi.abi, signer)
 
-                let state = govContract.state(this.currentProposal.id)
-
+                let state: number
+                if (Number(this.currentProposal.id)) {
+                    state = await govContract.state(this.currentProposal.id.toString())
+                }
+                else {
+                    state = -1
+                }
                 return state
+            }
+        } catch (error) {
+            console.log(error)
+            return -1
+        }
+
+        return -1
+    }
+
+    getVotingPower = async () => {
+        if (!this.connected) {
+            console.log('not connected!!!')
+            return
+        }
+
+        try {
+            if (window.ethereum) {
+                const provider = new ethers.providers.Web3Provider(window.ethereum)
+
+                const signer = provider.getSigner()
+                const tokContract = new ethers.Contract(this.tokenAddress, tokAbi.abi, signer)
+
+                let votingPower = await tokContract.getPastVotes(this.account, ethers.BigNumber.from(this.currentProposal.startBlock))
+
+                return votingPower
             }
         } catch (error) {
             console.log(error)
         }
     }
-
-    // getVotingPower = async () => {
-    //     if (!this.connected) {
-    //         console.log('not connected!!!')
-    //         return
-    //     }
-
-    //     try {
-    //         if (window.ethereum) {
-    //             const provider = new ethers.providers.Web3Provider(window.ethereum)
-
-    //             const signer = provider.getSigner()
-    //             const tokContract = new ethers.Contract(this.tokenAddress, tokAbi.abi, signer)
-
-    //             let currentBlock = await provider.getBlockNumber()
-    //             console.log(currentBlock)
-    //             let votingPower =  tokContract.getPastVotes(this.account, await provider.getBlockNumber() - 1)
-
-    //             return votingPower
-    //         }
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
 }
 

@@ -17,7 +17,7 @@ contract CadaoGovernor is Governor, GovernorCountingSimple, GovernorVotes {
 
     constructor(IVotes _token) Governor("CadaoGovernor") GovernorVotes(_token) {
         currentProposal.description = 'No proposals yet...';
-        currentProposal.id = 256;
+        currentProposal.id = 0;
     }
 
     // This function is used as the function that will be passed everytime someone propose something since this is not a real dao!, so ye it does nothing
