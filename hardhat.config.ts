@@ -1,7 +1,6 @@
 import { HardhatUserConfig } from 'hardhat/config'
 import "@nomicfoundation/hardhat-toolbox"
 
-import * as secrets from "./secrets.json"
 
 const config: HardhatUserConfig = {
     defaultNetwork: "localhost",
@@ -12,7 +11,10 @@ const config: HardhatUserConfig = {
         },
         localhost: {
             chainId: 31337,
-            accounts: secrets.accounts.hardhat_keys
+        },
+        goerli: {
+            url: 'https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+            accounts: [process.env.GOERLI_KEY ? process.env.GOERLI_KEY : '']
         }
     }
 }

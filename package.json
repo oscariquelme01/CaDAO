@@ -9,7 +9,7 @@
     "scripts": {
         "clean": "rimraf ./dist",
         "start": "webpack serve --config webpack/webpack.dev.js",
-        "build": "npm run clean && webpack --config webpack/webpack.prod.js",
+        "build": "npx hardhat compile && npm run clean && webpack --config webpack/webpack.prod.js",
         "start:dev": "nodemon"
     },
     "keywords": [],
