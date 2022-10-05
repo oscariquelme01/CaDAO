@@ -15,9 +15,9 @@ type proposal = {
 export class Cadao extends EventEmitter {
     connected: Boolean = false
     account: string = ''
-    governorAddress: string = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
-    tokenAddress: string = '0x5fbdb2315678afecb367f032d93f642f64180aa3'
-    vendorAddress: string = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0'
+    governorAddress: string = '0x052Ae457c91A913b5ce7E00d87014B4E9B64a8F2'
+    tokenAddress: string = '0x7A133F655AA7d8C0Ca2BC58e61Bce9D0D9E5918b'
+    vendorAddress: string = '0x18573090a54c8A6A61dAE3F27EF1935aB64021aC'
     currentProposal: proposal = { id: '', description: '', startBlock: 0, endBlock: 0 }
 
 
